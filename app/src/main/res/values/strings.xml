@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">FAIRTIQ</string>
+    <string name="error_message">Error</string>
+    <string name="quality_good">Good air quality</string>
+    <string name="quality_fair">Fair air quality</string>
+    <string name="quality_moderate">Moderate air quality</string>
+    <string name="quality_poor">Poor air quality</string>
+    <string name="quality_very_poor">Wroclaw air quality</string>
+    <string name="unknown_air_quality">Unknown air quality</string>
+</resources>
