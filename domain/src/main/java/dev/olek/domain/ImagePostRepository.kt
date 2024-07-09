@@ -6,5 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface ImagePostRepository {
 
     fun observeImagePosts(query: String): Flow<List<ImagePost>> // TODO add pagination support
+
+    suspend fun getImagePost(id: Long): ImagePost
     
 }

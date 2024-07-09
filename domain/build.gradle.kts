@@ -21,4 +21,5 @@ dependencies {
     api(libs.kotlin.coroutines)
     // Kermit
     api(libs.kermit)
+    implementation(libs.compose.runtime)
 }

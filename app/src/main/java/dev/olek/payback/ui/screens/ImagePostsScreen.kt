@@ -27,6 +27,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ImagePostsScreen(
     viewModel: ImagePostsViewModel = koinViewModel(),
+    onImagePostClickConfirmed: (Long) -> Unit,
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -46,7 +47,10 @@ fun ImagePostsScreen(
     if (postConfirmationDialogVisibility.first) {
         PostConfirmationDialog(
             imagePostId = postConfirmationDialogVisibility.second,
-            onConfirmation = {},
+            onConfirmation = {
+                postConfirmationDialogVisibility = false to -1
+                onImagePostClickConfirmed(it)
+            },
             onDismissRequest = {
                 postConfirmationDialogVisibility = false to -1
             }
@@ -54,7 +58,8 @@ fun ImagePostsScreen(
     }
     
     LaunchedEffect(state.error, context) {
-        state.error?.let { 
+        state.error?.let {
+            state.onErrorShown()
             Toast.makeText(context, "Error: $it", Toast.LENGTH_SHORT).show()
         }
     }
@@ -113,7 +118,7 @@ fun ImageList(
                         .clickable { onImagePostClicked(image) },
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(image.previewUrl)
-                        .placeholder(R.drawable.image_outline)
+                        .placeholder(R.drawable.placeholder)
                         .crossfade(true)
                         .build(),
                     contentScale = ContentScale.Crop,

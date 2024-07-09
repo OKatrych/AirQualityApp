@@ -29,7 +29,7 @@ class ImagePostsViewModel(
 
     private var searchJob: Job? = null
     private var firstEmission = true
-    
+
     init {
         onSearchQueryUpdated(DEFAULT_SEARCH_QUERY)
     }
@@ -37,21 +37,22 @@ class ImagePostsViewModel(
     fun onSearchQueryUpdated(searchQuery: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            runCatching {
-                debounceSearch()
-                repository.observeImagePosts(searchQuery)
-                    .catch { error ->
-                        Logger.e(throwable = error) { "Failed to get image posts" }
-                        mutableState.update { it.copy(isLoading = false, error = error.message) }
+            mutableState.update { it.copy(isLoading = true) }
+            debounceSearch()
+            repository.observeImagePosts(searchQuery)
+                .catch { error ->
+                    Logger.e(throwable = error) { "Failed to get image posts" }
+                    mutableState.update { it.copy(isLoading = false, error = error.message) }
+                }
+                .onEach { imagePosts ->
+                    mutableState.update {
+                        it.copy(
+                            isLoading = false,
+                            imagePosts = imagePosts,
+                        )
                     }
-                    .onEach { imagePosts ->
-                        println("STATE: got result ${imagePosts.size}")
-                        mutableState.update { it.copy(isLoading = false, imagePosts = imagePosts) }
-                    }
-                    .collect()
-            }.onFailure {
-                Logger.e(throwable = it) { "Pizda" }
-            }
+                }
+                .collect()
         }
         mutableState.update { it.copy(searchQuery = searchQuery) }
     }
@@ -59,7 +60,7 @@ class ImagePostsViewModel(
     private fun onErrorShown() {
         mutableState.update { it.copy(error = null) }
     }
-    
+
     private suspend fun debounceSearch() {
         if (!firstEmission) {
             delay(DEBOUNCE_TIMEOUT)
@@ -72,7 +73,7 @@ class ImagePostsViewModel(
     data class UiState(
         val isLoading: Boolean = true,
         val error: String? = null,
-        val onErrorShown: () -> Unit,
+        val onErrorShown: () -> Unit = {},
         val searchQuery: String = DEFAULT_SEARCH_QUERY,
         val imagePosts: List<ImagePost> = emptyList(),
     )

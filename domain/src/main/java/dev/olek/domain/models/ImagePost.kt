@@ -1,8 +1,10 @@
 package dev.olek.domain.models
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Immutable
 data class ImagePost(
     val id: Long,
     val tags: List<String>,

@@ -25,4 +25,11 @@ internal class ImagePostApi(
         val url = "?key=$API_KEY&q=$normalizedQuery&image_type=photo&page=$page&per_page=$perPage"
         return client.get(url).body()
     }
+
+    suspend fun getImagePost(
+        id: Long,
+    ): ImagePostsResponse {
+        val url = "?key=$API_KEY&id=$id"
+        return client.get(url).body()
+    }
 }

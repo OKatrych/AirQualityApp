@@ -5,8 +5,6 @@ import dev.olek.data.remote.ImagePostApi
 import dev.olek.data.remote.ImagePostsResponseMapper
 import dev.olek.domain.ImagePostRepository
 import dev.olek.domain.models.ImagePost
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.koin.core.annotation.Single
@@ -21,26 +19,26 @@ internal class ImagePostRepositoryImpl(
 
     companion object {
         private const val MAX_RETRIES = 3
-        private const val RETRIES_DELAY = 3L
+        private const val RETRIES_DELAY_MS = 3000L
     }
 
-    override fun observeImagePosts(query: String): Flow<List<ImagePost>> = flow {
-        val networkScope = CoroutineScope(currentCoroutineContext())
+    override fun observeImagePosts(query: String): Flow<List<ImagePost>> = merge(
+        database.observeImagePosts(query),
+        getImagePostsFromRemoteSource(query)
+    )
 
-        // Try to load the newest images from the network and save them to local storage
-        // This is done asynchronously to allow retries on network issues
-        getImagePostsFromRemoteSource(query).onEach {
-            database.insertImagePosts(query, it)
-        }.launchIn(networkScope)
-
-        emitAll(database.observeImagePosts(query))
-    }
+    override suspend fun getImagePost(id: Long): ImagePost = flow {
+        val postList = imagePostsResponseMapper.map(api.getImagePost(id))
+        emit(postList.first())
+    }.retry().first()
 
     private fun getImagePostsFromRemoteSource(query: String): Flow<List<ImagePost>> = flow {
         emit(imagePostsResponseMapper.map(api.getImagePosts(query)))
-    }.retryWhen { cause, attempt ->
+    }.retry().onEach { database.insertImagePosts(query, it) }
+
+    private fun <T> Flow<T>.retry() = this.retryWhen { cause, attempt ->
         if (attempt < MAX_RETRIES && cause is IOException) { // Retry only when connection issue occurred
-            delay(RETRIES_DELAY)
+            delay(RETRIES_DELAY_MS)
             true
         } else {
             false
