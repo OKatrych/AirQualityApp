@@ -1,10 +1,9 @@
 <resources>
-    <string name="app_name">FAIRTIQ</string>
+    <string name="app_name">Payback</string>
     <string name="error_message">Error</string>
-    <string name="quality_good">Good air quality</string>
-    <string name="quality_fair">Fair air quality</string>
-    <string name="quality_moderate">Moderate air quality</string>
-    <string name="quality_poor">Poor air quality</string>
-    <string name="quality_very_poor">Wroclaw air quality</string>
-    <string name="unknown_air_quality">Unknown air quality</string>
+    <string name="search">Search</string>
+    <string name="image_with_tags">"Image with tags: %s"</string>
+    <string name="do_you_want_to_see_full_image">Do you want to see full image?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

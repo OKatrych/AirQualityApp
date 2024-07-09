@@ -6,15 +6,15 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(libs.versions.jvmTarget.get().toInt())
 }
 
 android {
-    namespace = "dev.olek.fairtiq"
+    namespace = "dev.olek.payback"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "dev.olek.fairtiq"
+        applicationId = "dev.olek.payback"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionName = libs.versions.project.get()
@@ -69,7 +69,7 @@ dependencies {
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.lifecycle)
-    implementation(libs.play.services.location)
+    implementation(libs.coil)
     implementation(libs.kotlin.coroutines.play)
 
     debugImplementation(libs.compose.ui.tooling)

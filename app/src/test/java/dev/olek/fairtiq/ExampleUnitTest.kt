@@ -1,4 +1,4 @@
-package dev.olek.fairtiq
+package dev.olek.payback
 
 import org.junit.Test
 

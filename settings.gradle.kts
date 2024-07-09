@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "FAIRTIQ"
+rootProject.name = "Payback"
 include(":app")
 include(":domain")
 include(":data")

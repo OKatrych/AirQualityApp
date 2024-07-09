@@ -1,4 +1,4 @@
-package dev.olek.fairtiq.ui.theme
+package dev.olek.payback.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

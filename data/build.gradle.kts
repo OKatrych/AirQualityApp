@@ -6,7 +6,7 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(libs.versions.jvmTarget.get().toInt())
     sourceSets.main {
         kotlin.srcDir("build/generated/ksp/main/kotlin")
     }
@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.ktor.serialization)
     implementation(libs.ktor.contentNegotiation)
     implementation(libs.ktor.logging)
+    implementation(libs.datastore)
 
     testImplementation(libs.junit)
     ksp(libs.koin.ksp.compiler)
